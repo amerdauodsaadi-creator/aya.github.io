@@ -1,1 +1,224 @@
-# aya.github.io
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Aya 💗</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Initial Pink Dot */
+        .dot {
+            width: 25px;
+            height: 25px;
+            background: #ff4da6;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff4da6, 0 0 40px #ff4da6;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            z-index: 100;
+        }
+
+        .dot:hover { transform: scale(1.2); }
+
+        /* Small Hidden Dots (Mini-Dots) */
+        .mini-dot {
+            width: 18px;
+            height: 18px;
+            background: #ffb3d9;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 1s ease, transform 0.3s ease;
+            box-shadow: 0 0 10px #ffb3d9;
+            z-index: 50;
+            display: none; /* Hidden until main heart shows */
+        }
+
+        /* Pulse animation for mini dots so she finds them */
+        @keyframes miniPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px #ffb3d9; }
+            50% { transform: scale(1.2); box-shadow: 0 0 20px #ffffff; }
+        }
+
+        .mini-dot.active-state {
+            display: block;
+            animation: miniPulse 2s infinite ease-in-out;
+        }
+
+        /* Heart Container */
+        .heart {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: #ff4da6;
+            transform: rotate(-45deg) scale(0);
+            opacity: 0;
+            transition: all 1s cubic-bezier(.68,-0.55,.27,1.55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255, 77, 166, 0.5);
+        }
+
+        .heart:before, .heart:after {
+            content: ""; position: absolute;
+            width: 300px; height: 300px;
+            background: #ff4da6; border-radius: 50%;
+        }
+        .heart:before { top: -150px; left: 0; }
+        .heart:after { left: 150px; top: 0; }
+
+        /* When the heart is revealed */
+        .heart.show {
+            transform: rotate(-45deg) scale(1);
+            opacity: 1;
+            animation: beat 1.5s infinite ease-in-out 1s;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.04); }
+        }
+
+        /* Letter Text */
+        .letter {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            width: 85%; text-align: center; color: white;
+            font-size: 20px; line-height: 1.4; opacity: 0;
+            transition: opacity 1s ease 1.5s; z-index: 1000;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .letter.showText { opacity: 1; }
+
+        /* Stickers Style */
+        .sticker {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            cursor: pointer;
+            pointer-events: none; /* Unclickable until shown */
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+            object-fit: contain;
+        }
+
+        .sticker.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        /* Particles */
+        .particle { position: absolute; background: #ff4da6; border-radius: 50%; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div class="dot" id="mainDot"></div>
+
+    <div class="heart" id="heart">
+        <div class="letter" id="letter">
+            dear yooyT <br>
+            i clearly have no context, but i wanted<br>
+            to tell u about how much i love u and<br>
+            appreciate u in my life, i hated myself<br>
+            before, but now, u taught me how to love<br>
+            myself, ty for every thing u did to me,<br>
+            and once again, ily<br>
+            from ur nerdy hb... <br>
+            3mer <br>
+        </div>
+    </div>
+
+    <div class="mini-dot" id="dot1" style="top: 15%; left: 15%;"></div>
+    <div class="mini-dot" id="dot2" style="top: 15%; right: 15%;"></div>
+    <div class="mini-dot" id="dot3" style="bottom: 15%; left: 50%; transform: translateX(-50%);"></div>
+
+    <img src="https://uploads.onecompiler.io/4428dypdk/44e48fhej/background-remover-1771520719278.png" id="s1" class="sticker" style="top: 10%; left: 10%;">
+    <img src="https://uploads.onecompiler.io/4428dypdk/44e48fhej/background-remover-1771520280816.png" id="s2" class="sticker" style="top: 10%; right: 10%;">
+    <img src="https://uploads.onecompiler.io/4428dypdk/44e48fhej/background-remover-1771520334655.png" id="s3" class="sticker" style="bottom: 10%; left: 45%;">
+
+    <script>
+        const mainDot = document.getElementById("mainDot");
+        const heart = document.getElementById("heart");
+        const letter = document.getElementById("letter");
+        const miniDots = document.querySelectorAll(".mini-dot");
+
+        // Logic for the first click
+        mainDot.addEventListener("click", () => {
+            mainDot.style.transform = "scale(0)";
+            mainDot.style.opacity = "0";
+
+            setTimeout(() => {
+                mainDot.style.display = "none";
+                heart.classList.add("show");
+                letter.classList.add("showText");
+                createParticles();
+
+                // Show mini dots after letter starts appearing
+                setTimeout(() => {
+                    miniDots.forEach(dot => {
+                        dot.classList.add("active-state");
+                        dot.style.opacity = "1";
+                    });
+                }, 2500);
+            }, 500);
+        });
+
+        // Logic for Mini-Dots toggling Stickers
+        miniDots.forEach((dot, index) => {
+            const sticker = document.getElementById(`s${index + 1}`);
+
+            // Clicking the Dot shows the Sticker
+            dot.addEventListener("click", () => {
+                sticker.classList.add("visible");
+                dot.style.opacity = "0";
+                dot.style.pointerEvents = "none";
+            });
+
+            // Clicking the Sticker returns to the Dot
+            sticker.addEventListener("click", () => {
+                sticker.classList.remove("visible");
+                dot.style.opacity = "1";
+                dot.style.pointerEvents = "auto";
+            });
+        });
+
+        // Background Sparkles Function
+        function createParticles() {
+            for (let i = 0; i < 35; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                const size = Math.random() * 7 + 3;
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                document.body.appendChild(p);
+                const dx = (Math.random() - 0.5) * 800;
+                const dy = (Math.random() - 0.5) * 800;
+                const anim = p.animate([
+                    { transform: 'translate(0, 0)', opacity: 1 },
+                    { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
+                ], { duration: 2000, easing: 'ease-out' });
+                anim.onfinish = () => p.remove();
+            }
+        }
+    </script>
+</body>
+</html>
