@@ -1,224 +1,143 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Aya 💗</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            margin: 0;
-            background: #0a0a0a;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
-        }
-
-        /* Initial Pink Dot */
-        .dot {
-            width: 25px;
-            height: 25px;
-            background: #ff4da6;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #ff4da6, 0 0 40px #ff4da6;
-            cursor: pointer;
-            transition: all 0.5s ease;
-            z-index: 100;
-        }
-
-        .dot:hover { transform: scale(1.2); }
-
-        /* Small Hidden Dots (Mini-Dots) */
-        .mini-dot {
-            width: 18px;
-            height: 18px;
-            background: #ffb3d9;
-            border-radius: 50%;
-            position: absolute;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 1s ease, transform 0.3s ease;
-            box-shadow: 0 0 10px #ffb3d9;
-            z-index: 50;
-            display: none; /* Hidden until main heart shows */
-        }
-
-        /* Pulse animation for mini dots so she finds them */
-        @keyframes miniPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 10px #ffb3d9; }
-            50% { transform: scale(1.2); box-shadow: 0 0 20px #ffffff; }
-        }
-
-        .mini-dot.active-state {
-            display: block;
-            animation: miniPulse 2s infinite ease-in-out;
-        }
-
-        /* Heart Container */
-        .heart {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: #ff4da6;
-            transform: rotate(-45deg) scale(0);
-            opacity: 0;
-            transition: all 1s cubic-bezier(.68,-0.55,.27,1.55);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 50px rgba(255, 77, 166, 0.5);
-        }
-
-        .heart:before, .heart:after {
-            content: ""; position: absolute;
-            width: 300px; height: 300px;
-            background: #ff4da6; border-radius: 50%;
-        }
-        .heart:before { top: -150px; left: 0; }
-        .heart:after { left: 150px; top: 0; }
-
-        /* When the heart is revealed */
-        .heart.show {
-            transform: rotate(-45deg) scale(1);
-            opacity: 1;
-            animation: beat 1.5s infinite ease-in-out 1s;
-        }
-
-        @keyframes beat {
-            0%, 100% { transform: rotate(-45deg) scale(1); }
-            50% { transform: rotate(-45deg) scale(1.04); }
-        }
-
-        /* Letter Text */
-        .letter {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(45deg);
-            width: 85%; text-align: center; color: white;
-            font-size: 20px; line-height: 1.4; opacity: 0;
-            transition: opacity 1s ease 1.5s; z-index: 1000;
-            font-family: 'Dancing Script', cursive;
-        }
-
-        .letter.showText { opacity: 1; }
-
-        /* Stickers Style */
-        .sticker {
-            position: absolute;
-            width: 110px;
-            height: 110px;
-            cursor: pointer;
-            pointer-events: none; /* Unclickable until shown */
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 2000;
-            object-fit: contain;
-        }
-
-        .sticker.visible {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto;
-        }
-
-        /* Particles */
-        .particle { position: absolute; background: #ff4da6; border-radius: 50%; pointer-events: none; }
-    </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body { margin: 0; background: #050505; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+    #controls { position: absolute; bottom: 30px; z-index: 10; }
+    button { 
+      padding: 15px 40px; font-size: 18px; letter-spacing: 2px;
+      background: transparent; border: 2px solid #ff00ff; color: #ff00ff;
+      border-radius: 50px; cursor: pointer; transition: 0.3s;
+      text-transform: uppercase; font-family: 'Segoe UI', sans-serif;
+    }
+    button:hover { background: #ff00ff; color: white; box-shadow: 0 0 20px #ff00ff; }
+  </style>
 </head>
 <body>
+  <div id="controls"><button onclick="startBloom()">Awaken the Lotus</button></div>
 
-    <div class="dot" id="mainDot"></div>
+  <script>
+    let bloom = 0;
+    let active = false;
+    let particles = [];
+    let ripples = [];
 
-    <div class="heart" id="heart">
-        <div class="letter" id="letter">
-            dear yooyT <br>
-            i clearly have no context, but i wanted<br>
-            to tell u about how much i love u and<br>
-            appreciate u in my life, i hated myself<br>
-            before, but now, u taught me how to love<br>
-            myself, ty for every thing u did to me,<br>
-            and once again, ily<br>
-            from ur nerdy hb<br>
-            3mer<br>
-        </div>
-    </div>
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      angleMode(DEGREES);
+    }
 
-    <div class="mini-dot" id="dot1" style="top: 15%; left: 15%;"></div>
-    <div class="mini-dot" id="dot2" style="top: 15%; right: 15%;"></div>
-    <div class="mini-dot" id="dot3" style="bottom: 15%; left: 50%; transform: translateX(-50%);"></div>
+    function draw() {
+      background(5, 5, 15);
+      translate(width / 2, height / 2);
 
-    <img src="https://uploads.onecompiler.io/4428dypdk/44e48fhej/background-remover-1771520719278.png" id="s1" class="sticker" style="top: 10%; left: 10%;">
-    <img src="https://uploads.onecompiler.io/4428dypdk/44e48fhej/background-remover-1771520280816.png" id="s2" class="sticker" style="top: 10%; right: 10%;">
-    <img src="https://uploads.onecompiler.io/4428dypdk/44e48fhej/background-remover-1771520334655.png" id="s3" class="sticker" style="bottom: 10%; left: 45%;">
+      // 1. Water Ripples
+      drawRipples();
 
-    <script>
-        const mainDot = document.getElementById("mainDot");
-        const heart = document.getElementById("heart");
-        const letter = document.getElementById("letter");
-        const miniDots = document.querySelectorAll(".mini-dot");
+      // 2. The Great Leaf (Lily Pad)
+      let leafOsc = sin(frameCount * 1.5) * 3;
+      push();
+      rotate(leafOsc);
+      drawLilyPad();
+      pop();
 
-        // Logic for the first click
-        mainDot.addEventListener("click", () => {
-            mainDot.style.transform = "scale(0)";
-            mainDot.style.opacity = "0";
+      // 3. Blooming Logic
+      if (active && bloom < 1) bloom += 0.008; 
 
-            setTimeout(() => {
-                mainDot.style.display = "none";
-                heart.classList.add("show");
-                letter.classList.add("showText");
-                createParticles();
+      // 4. Draw Lotus Layers (Back to Front)
+      // We use 'bloom' to control both rotation and scale for a "furling" effect
+      drawLotusLayer(12, 220 * bloom, color(255, 50, 150, 150), 1.4, 40 * (1 - bloom));
+      drawLotusLayer(10, 160 * bloom, color(255, 100, 200, 180), 1.2, 20 * (1 - bloom));
+      drawLotusLayer(8, 90 * bloom, color(255, 200, 255, 220), 0.9, 0);
 
-                // Show mini dots after letter starts appearing
-                setTimeout(() => {
-                    miniDots.forEach(dot => {
-                        dot.classList.add("active-state");
-                        dot.style.opacity = "1";
-                    });
-                }, 2500);
-            }, 500);
-        });
+      // 5. Particle System (Pollen Sparkles)
+      if (bloom > 0.8) {
+        if (random(1) > 0.8) particles.push(new Particle());
+      }
+      for (let p of particles) {
+        p.update();
+        p.show();
+      }
+      
+      // Cleanup particles
+      particles = particles.filter(p => p.alpha > 0);
+    }
 
-        // Logic for Mini-Dots toggling Stickers
-        miniDots.forEach((dot, index) => {
-            const sticker = document.getElementById(`s${index + 1}`);
+    function drawLilyPad() {
+      noStroke();
+      fill(20, 60, 40, 200);
+      drawingContext.shadowBlur = 20;
+      drawingContext.shadowColor = 'green';
+      
+      beginShape();
+      for (let a = 0; a < 340; a++) {
+        let r = 250 + sin(a * 5) * 5;
+        let x = r * cos(a);
+        let y = r * 0.5 * sin(a);
+        vertex(x, y);
+      }
+      endShape(CLOSE);
+      drawingContext.shadowBlur = 0;
+    }
 
-            // Clicking the Dot shows the Sticker
-            dot.addEventListener("click", () => {
-                sticker.classList.add("visible");
-                dot.style.opacity = "0";
-                dot.style.pointerEvents = "none";
-            });
+    function drawLotusLayer(count, size, col, stretch, rotOffset) {
+      push();
+      fill(col);
+      stroke(255, 255, 255, 100);
+      strokeWeight(0.5);
+      
+      for (let i = 0; i < count; i++) {
+        push();
+        rotate((360 / count) * i + rotOffset + sin(frameCount * 0.5) * 3);
+        
+        // Petal Shape (Bezier curve for organic look)
+        beginShape();
+        vertex(0, 0);
+        bezierVertex(size/2, -size/3, size, -size/6, size * stretch, 0);
+        bezierVertex(size, size/6, size/2, size/3, 0, 0);
+        endShape();
+        pop();
+      }
+      pop();
+    }
 
-            // Clicking the Sticker returns to the Dot
-            sticker.addEventListener("click", () => {
-                sticker.classList.remove("visible");
-                dot.style.opacity = "1";
-                dot.style.pointerEvents = "auto";
-            });
-        });
+    function drawRipples() {
+      if (frameCount % 60 == 0) ripples.push({r: 0, a: 255});
+      noFill();
+      for (let r of ripples) {
+        stroke(100, 200, 255, r.a);
+        ellipse(0, 0, r.r, r.r * 0.5);
+        r.r += 2;
+        r.a -= 2;
+      }
+      ripples = ripples.filter(r => r.a > 0);
+    }
 
-        // Background Sparkles Function
-        function createParticles() {
-            for (let i = 0; i < 35; i++) {
-                const p = document.createElement('div');
-                p.classList.add('particle');
-                const size = Math.random() * 7 + 3;
-                p.style.width = `${size}px`;
-                p.style.height = `${size}px`;
-                document.body.appendChild(p);
-                const dx = (Math.random() - 0.5) * 800;
-                const dy = (Math.random() - 0.5) * 800;
-                const anim = p.animate([
-                    { transform: 'translate(0, 0)', opacity: 1 },
-                    { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
-                ], { duration: 2000, easing: 'ease-out' });
-                anim.onfinish = () => p.remove();
-            }
-        }
-    </script>
+    class Particle {
+      constructor() {
+        this.pos = createVector(random(-20, 20), random(-10, 10));
+        this.vel = createVector(random(-1, 1), random(-2, -5));
+        this.alpha = 255;
+      }
+      update() {
+        this.pos.add(this.vel);
+        this.alpha -= 3;
+      }
+      show() {
+        noStroke();
+        fill(255, 215, 0, this.alpha);
+        circle(this.pos.x, this.pos.y, random(2, 5));
+      }
+    }
+
+    function startBloom() {
+      active = true;
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+  </script>
 </body>
 </html>
